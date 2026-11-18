@@ -1,0 +1,57 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "CdkAssumeDeployRoles",
+      "Effect": "Allow",
+      "Action": "sts:AssumeRole",
+      "Resource": [
+        "arn:aws:iam::*:role/cdk-hnb659fds-deploy-role-*",
+        "arn:aws:iam::*:role/cdk-hnb659fds-file-publishing-role-*",
+        "arn:aws:iam::*:role/cdk-hnb659fds-lookup-role-*"
+      ]
+    },
+    {
+      "Sid": "AppStackRead",
+      "Effect": "Allow",
+      "Action": [
+        "cloudformation:DescribeStacks",
+        "cloudformation:DescribeStackEvents",
+        "cloudformation:DescribeStackResource",
+        "cloudformation:DescribeStackResources",
+        "cloudformation:ListStackResources"
+      ],
+      "Resource": "arn:aws:cloudformation:*:*:stack/PiiDocumentRedactionPocStack/*"
+    },
+    {
+      "Sid": "ApiEndpointLookup",
+      "Effect": "Allow",
+      "Action": "apigateway:GET",
+      "Resource": "arn:aws:apigateway:*::/apis"
+    },
+    {
+      "Sid": "AdminRecoveryOnUserPool",
+      "Effect": "Allow",
+      "Action": [
+        "cognito-idp:AdminGetUser",
+        "cognito-idp:AdminAddUserToGroup"
+      ],
+      "Resource": "arn:aws:cognito-idp:*:*:userpool/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/PiiRedactionApp": "true"
+        }
+      }
+    },
+    {
+      "Sid": "AccountWideUnscopable",
+      "Effect": "Allow",
+      "Action": [
+        "sts:GetCallerIdentity",
+        "cloudformation:ValidateTemplate",
+        "cloudformation:GetTemplateSummary"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
